@@ -9,7 +9,6 @@ var connection = mysql.createConnection({
     password: "root",
     database: "bamazon"
   });
-  
   connection.connect(function(err) {
     if (err) throw err;
   });
@@ -17,20 +16,19 @@ var connection = mysql.createConnection({
 function displayTable() {
     connection.query("SELECT * FROM products", function(err, res) {
         var table = new Table({
-        head: ['ID', 'PRODUCT NAME','PRICE', 'QUANTITY']
-      , colWidths: [5, 25, 17, 5]
+        head: ['ID', 'PRODUCT NAME','PRICE', 'QUANTITY'],
+        colWidths: [5, 18, 10, 12]
      });
         if (err) throw err;
         for (i = 0; i < res.length; i++){
             table.push(
                 [res[i].item_id, res[i].product_name, "$" + res[i].price, res[i].stock_quantity]
-            )
+            );
         };
-        console.log(table.toString())
-        
+    console.log(table.toString())
     });
 startFunction();
-}
+};
 
 function restartOption (){
     inquirer
@@ -38,7 +36,7 @@ function restartOption (){
       name: "postOrBid",
       type: "list",
       message: "Would you like to make another purchase?",
-      choices: ["MOAR SHOPPING", "I HAVE NO MONEYZ"]
+      choices: ["I need more stuff!", "No more gold :("]
     })
     .then(function(answer) {
       // based on their answer, either call the bid or the post functions
@@ -78,7 +76,6 @@ inquirer.prompt([
             console.log("Please use a valid ID")
             return false;
           }
-
     }  
     ]).then(function(answer){
         var chosenProduct = (answer.product) -1;
@@ -98,9 +95,9 @@ inquirer.prompt([
               function(error) {
                 if (error) throw err;
                 console.log("------------------------------------------")
-                console.log(res[chosenProduct].product_name + " successfully purchased!\n");
+                console.log(res[chosenProduct].product_name + " successfully purchased!");
+                console.log("Your total is : $" + ((res[chosenProduct].price) * amountChosen));
                 console.log("------------------------------------------")
-                // displayTable();
                 restartOption();
               }
             );
