@@ -33,15 +33,15 @@ var connection = mysql.createConnection({
             break;
   
           case "View Low Inventory":
-            // multiSearch();
-            break;
+            viewLowInventory();
+          break;
   
           case "Add Products to Inventory":
             updateInventory();
             break;
   
           case "Add New Products":
-            // songSearch();
+            addNew();
             break;
         }
       });
@@ -50,33 +50,19 @@ var connection = mysql.createConnection({
 function updateInventory(){
     displayTable();
     connection.query("SELECT * FROM products", function(err, res) {
-//         var table = new Table({
-//         head: ['ID', 'PRODUCT NAME', 'DEPARTMENT NAME','PRICE', 'QUANTITY'],
-//         colWidths: [5, 18, 20, 10, 12]
-//      });
-//         if (err) throw err;
-//         for (i = 0; i < res.length; i++){
-//             table.push(
-//                 [res[i].item_id, res[i].product_name, res[i].department_name, "$" + res[i].price, res[i].stock_quantity]
-//             );
-//         };
-//     console.log("------------------------------")
-//     console.log(table.toString());
-// });
-    inquirer
-      .prompt([
+    inquirer.prompt([
     {
         name: "product",
         type: "input",
         message: "Enter the ID of the product you would like to update",
-        // validate: function(value){
-        //     if(isNaN(value) == false){
-        //       return true;
-        //     } else{
-        //         console.log("Please use a valid input")
-        //       return false;
-        //     }
-        //   }
+        validate: function(value){
+            if(isNaN(value) == false){
+              return true;
+            } else{
+                console.log("Please use a valid input")
+              return false;
+            }
+          }
     },
     {
         name: "quantity",
@@ -102,16 +88,15 @@ function updateInventory(){
                 {
                 item_id: answer.product 
                 }
-              ],
-        //   connection.end();
-            )
+            ],
+        )
             console.log("------------------------------------------")
-                console.log(res[chosenProduct].product_name + " successfully updated!");
-                console.log("Updated " + (res[chosenProduct].product_name) + " by " + amountChosen);
-                console.log("The current stock of " + (res[chosenProduct].product_name) + " is " + (res[chosenProduct].stock_quantity));
-                console.log("------------------------------------------")
-                restartOption();
-            });
+            console.log(res[chosenProduct].product_name + " successfully updated!");
+            console.log("Updated " + (res[chosenProduct].product_name) + " by " + amountChosen);
+            console.log("The current stock of " + (res[chosenProduct].product_name) + " is " + (res[chosenProduct].stock_quantity));
+            console.log("------------------------------------------")
+            restartOption();
+        });
     });
 };
 
@@ -131,7 +116,53 @@ function productsForSale() {
     runSearch();
     });
 };
-runSearch();
+
+function addNew() {
+    connection.query("SELECT * FROM products", function(err, res) {
+        inquirer.prompt([
+            {
+                name: "product",
+                type: "input",
+                message: "Enter the name of the product:"
+                
+            },
+            {
+                name: "department",
+                type: "input",
+                message: "Enter the department:"
+            },
+            {
+                name: "price",
+                type: "input",
+                message: "Enter the price:" 
+            },
+            {
+                name: "quantity",
+                type: "input",
+                message: "Enter the current stock:"
+            }
+        ]).then(function(answer) {
+            connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",
+                [
+                    {
+                        product_name: answer.product
+                    },
+                    {
+                        department: answer.department
+                    },
+                    {
+                        price: answer.price
+                    },
+                    {
+                        stock_quantity: answer.quantity
+                    }
+                ]
+            );
+        console.log("You have added " + answer.product + " to the inventory!")
+        });
+    });
+    // restartOption();
+};
 
 function displayTable() {
     connection.query("SELECT * FROM products", function(err, res) {
@@ -149,17 +180,34 @@ function displayTable() {
     });
 };
 
+function viewLowInventory() {
+    connection.query("SELECT * FROM products WHERE stock_quantity<10", function(err, res) {
+        var table = new Table({
+        head: ['ID', 'PRODUCT NAME','PRICE', 'QUANTITY'],
+        colWidths: [5, 18, 10, 12]
+     });
+        if (err) throw err;
+        for (i = 0; i < res.length; i++){
+            table.push(
+                [res[i].item_id, res[i].product_name, "$" + res[i].price, res[i].stock_quantity]
+            );
+        };
+    console.log(table.toString());
+    });
+restartOption();    
+};
+
 function restartOption (){
     inquirer
     .prompt({
-      name: "postOrBid",
+      name: "restart",
       type: "list",
       message: "Would you like to manage anything else?",
       choices: ["Yes, I need to continue working", "No thank you"]
     })
     .then(function(answer) {
       // based on their answer, either call the bid or the post functions
-      if (answer.postOrBid.toUpperCase() === "Yes, I need to continue working") {
+      if (answer.restart === "Yes, I need to continue working") {
         runSearch();
       }
       else {
@@ -167,3 +215,4 @@ function restartOption (){
       }
     });
 }
+runSearch();
