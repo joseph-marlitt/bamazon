@@ -37,19 +37,39 @@ function displayTable() {
 startFunction();
 }
 
+function restartOption (){
+    inquirer
+    .prompt({
+      name: "postOrBid",
+      type: "list",
+      message: "Would you like to make another purchase?",
+      choices: ["MOAR SHOPPING", "I HAVE NO MONEYZ"]
+    })
+    .then(function(answer) {
+      // based on their answer, either call the bid or the post functions
+      if (answer.postOrBid.toUpperCase() === "MOAR SHOPPING") {
+        displayTable();
+      }
+      else {
+        connection.end();
+      }
+    });
+}
 
 function startFunction(){
+    connection.query("SELECT * FROM products", function(err, res) {
 inquirer.prompt([
     {
         type: 'input',
         name: 'product',
         message: "\nTell us the ID of the product you would like to purchase.\n",
-        validate: function(value) {
-            if (isNaN(value) === false) {
+        validate: function(value){
+            if(isNaN(value) == false && parseInt(value) <= res.length && parseInt(value) > 0){
               return true;
+            } else{
+                console.log("Please use a valid input")
+              return false;
             }
-            console.log("Please use a valid ID")
-            return false;
           }
     } ,
     {
@@ -66,47 +86,29 @@ inquirer.prompt([
 
     }  
     ]).then(function(answer){
+        var chosenProduct = (answer.product) -1;
+        var amountChosen = parseInt(answer.quantity);
+
         connection.query(
             "UPDATE products SET ? WHERE ?",
             [
                 {
-                  item_id: parseInt(answer.product)
+                stock_quantity: (res[chosenProduct].stock_quantity - amountChosen)
                 },
                 {
-                  stock_quantity: "-" + parseInt(answer.quantity)
+                item_id: answer.product 
                 }
               ],
               function(error) {
                 if (error) throw err;
-                console.log("Item successfully purchased!");
-                displayTable();
+                console.log("------------------------------------------")
+                console.log(res[chosenProduct].product_name + " successfully purchased!\n");
+                console.log("------------------------------------------")
+                // displayTable();
+                restartOption();
               }
-        );
-        
-        
-        //   runSearch();
+            );
         });
-     
-     
-    };
-  
-// function multipleAppearances() {
-//     connection.query("SELECT artist FROM music GROUP BY artist HAVING COUNT(*) > 1", function(err, res) {
-//         if (err) throw err;
-//       console.log(res);
-//       connection.end();
-//     });
-//     console.log(answers);
-// }
-
-// function byArtist(answers) {
-//     console.log(answers )
-//     connection.query("SELECT * FROM music WHERE artist =?", answers, function(err, res) {
-//         if (err) throw err;
-//             console.log(res);
-//             connection.end();
-//     });
-//     console.log(answers);
-// }
+    });
+};
 displayTable();
-// startFunction();
