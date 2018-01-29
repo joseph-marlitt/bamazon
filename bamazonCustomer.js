@@ -22,58 +22,73 @@ var connection = mysql.createConnection({
 function displayTable() {
     connection.query("SELECT * FROM products", function(err, res) {
         var table = new Table({
-        head: ['ID', 'PRODUCT NAME','PRICE']
-      , colWidths: [5, 20, 17, 7, 10, 14]
+        head: ['ID', 'PRODUCT NAME','PRICE', 'QUANTITY']
+      , colWidths: [5, 25, 17, 5]
      });
         if (err) throw err;
         for (i = 0; i < res.length; i++){
             table.push(
-                [res[i].item_id, res[i].product_name, res[i].price]
+                [res[i].item_id, res[i].product_name, "$" + res[i].price, res[i].stock_quantity]
             )
         };
         console.log(table.toString())
+        
     });
+startFunction();
 }
+
 
 function startFunction(){
 inquirer.prompt([
     {
         type: 'input',
         name: 'product',
-        message: "\nTell us the ID of the product you would like to purchase.\n"
-        // choices: [
-        //     "Purchase an item",
-        //     new inquirer.Separator(),
-        //     "Search by top appearances more than once",
-        //     new inquirer.Separator(),
-        //     "Search by date range (for exampe 1990 and 2007)",
-        //     new inquirer.Separator()
-        // ]
+        message: "\nTell us the ID of the product you would like to purchase.\n",
+        validate: function(value) {
+            if (isNaN(value) === false) {
+              return true;
+            }
+            console.log("Please use a valid ID")
+            return false;
+          }
     } ,
     {
         type: 'input',
         name: 'quantity',
         message: "\nQuantity desired.\n",
+        validate: function(value) {
+            if (isNaN(value) === false) { 
+              return true;
+            }
+            console.log("Please use a valid ID")
+            return false;
+          }
 
     }  
-    ]).then(answers => {
-    if (answers.choice === "Search by artist"){
-        inquirer.prompt([
-        {
-           type: "input",
-            name: "artist",
-            message: "Which artist would you like to search by?" 
-        }   
-        ]).then(answers => {
-        //    byArtist(answers.artist); 
-        })   
-    }
-    else if (answers.choice === "Search by top appearances more than once"){
-                console.log("search");
-                // multipleAppearances();
-            }   
-    });
-}
+    ]).then(function(answer){
+        connection.query(
+            "UPDATE products SET ? WHERE ?",
+            [
+                {
+                  item_id: parseInt(answer.product)
+                },
+                {
+                  stock_quantity: "-" + parseInt(answer.quantity)
+                }
+              ],
+              function(error) {
+                if (error) throw err;
+                console.log("Item successfully purchased!");
+                displayTable();
+              }
+        );
+        
+        
+        //   runSearch();
+        });
+     
+     
+    };
   
 // function multipleAppearances() {
 //     connection.query("SELECT artist FROM music GROUP BY artist HAVING COUNT(*) > 1", function(err, res) {
@@ -94,4 +109,4 @@ inquirer.prompt([
 //     console.log(answers);
 // }
 displayTable();
-startFunction();
+// startFunction();
