@@ -89,6 +89,7 @@ inquirer.prompt([
         var chosenProduct = (answer.product) -1;
         var amountChosen = parseInt(answer.quantity);
 
+        if ((res[chosenProduct].stock_quantity) >= parseInt(answer.quantity)){
         connection.query(
             "UPDATE products SET ? WHERE ?",
             [
@@ -108,6 +109,13 @@ inquirer.prompt([
                 restartOption();
               }
             );
+        } else {
+            console.log("------------------------------------------")
+            console.log("\nSorry, we do not have enough stock to complete your request.\n")
+            console.log("------------------------------------------")
+            restartOption();
+            return false;
+        }
         });
     });
 };
