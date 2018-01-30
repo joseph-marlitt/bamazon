@@ -23,7 +23,8 @@ var connection = mysql.createConnection({
           "View Products for Sale",
           "View Low Inventory",
           "Add Products to Inventory",
-          "Add New Products"
+          "Add New Products",
+          "Exit Manager Mode"
         ]
       })
       .then(function(answer) {
@@ -42,6 +43,10 @@ var connection = mysql.createConnection({
   
           case "Add New Products":
             addNew();
+            break;
+
+          case "Exit Manager Mode":
+            connection.end();
             break;
         }
       });
@@ -142,26 +147,24 @@ function addNew() {
                 message: "Enter the current stock:"
             }
         ]).then(function(answer) {
-            connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",
-                [
-                    {
-                        product_name: answer.product
-                    },
-                    {
-                        department: answer.department
-                    },
-                    {
-                        price: answer.price
-                    },
-                    {
-                        stock_quantity: answer.quantity
-                    }
-                ]
-            );
-        console.log("You have added " + answer.product + " to the inventory!")
+            var chosenProduct = answer.product;
+            var departmentName = answer.department;
+            var priceOfItem = parseFloat(answer.price);
+            var stockQuantity = parseInt(answer.quantity);
+            var post  = {
+                product_name: chosenProduct,
+                department_name: departmentName,
+                price: priceOfItem,
+                stock_quantity: stockQuantity
+            };
+            connection.query('INSERT INTO products SET ?', post, function (error, results, fields) {
+                if (error) throw error;
+                console.log("You have added " + answer.product + " to the inventory!")
+                restartOption();
+            });               
         });
     });
-    // restartOption();
+    
 };
 
 function displayTable() {
