@@ -82,7 +82,7 @@ function updateInventory(){
             }
           }
     }]).then(function(answer) {
-        var chosenProduct = (answer.product) -1;
+        var chosenProduct = parseInt(answer.product) -1;
         var amountChosen = parseInt(answer.quantity);
         connection.query(
             "UPDATE products SET ? WHERE ?",
@@ -91,7 +91,7 @@ function updateInventory(){
                 stock_quantity: (res[chosenProduct].stock_quantity + amountChosen)
                 },
                 {
-                item_id: answer.product 
+                item_id: chosenProduct 
                 }
             ],
         )
