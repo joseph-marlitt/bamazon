@@ -8,16 +8,16 @@ Just run these files in your terminal:
 
 ```bamazonCustomer.js``` for one-stop shopping.
 
-![alt text](customer1)
-![alt text](customer2)
+![alt text](./customer1)
+![alt text](./customer2)
 
 
 ```bamazonManager.js```- for manager access.
-![alt text](manager1)
-![alt text](manager2)
-![alt text](manager3)
-![alt text](manager4)
-![alt text](manager5)
+![alt text](./manager1)
+![alt text](./manager2)
+![alt text](./manager3)
+![alt text](./manager4)
+![alt text](./manager5)
 
 
 
