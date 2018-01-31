@@ -6,7 +6,7 @@ This application lets you shop for your favorite products, with real time and up
 
 Just run these files in your terminal:
 
-##Bamazon Customer Page
+## Bamazon Customer Page
 
 ```bamazonCustomer.js``` for one-stop shopping. See the images below for a basic rundown of shopping!
 
@@ -20,7 +20,7 @@ Choose Your quantity!
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/customer2.png)
 
 
-##Bamazon Manager Page:
+## Bamazon Manager Page:
 
 ```bamazonManager.js```- for manager access.
 
