@@ -11,6 +11,7 @@ Just run these files in your terminal:
 
 Choose a product!
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/customer1.png)
+
 Choose Your quantity!
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/customer2.png)
 
@@ -20,8 +21,11 @@ Choose Your quantity!
 
 Select a Tool:
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/manager1.png)
+
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/manager2.png)
+
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/manager3.png)
+
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/manager4.png)
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/manager5.png)
 ![customer1](https://github.com/joseph-marlitt/bamazon/blob/master/manager6.png)
