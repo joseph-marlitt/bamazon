@@ -4,7 +4,11 @@
 
 This application lets you shop for your favorite products, with real time and up to date inventory!
 
-Just run these files in your terminal:
+To Start:
+
+Clone Repo
+NPM Install
+Run either ```bamazonCustomer.js``` or ```bamazonManager.js```
 
 ## Bamazon Customer Page
 
